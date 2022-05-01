@@ -94,10 +94,11 @@ function renderBooksInfo(bookInfo){
         showPanel.appendChild(bookAurH)
         showPanel.appendChild(bookDesP)
 
-        // console.log(showBookInfo[5])
+        console.log(showBookInfo[5])
         // console.log(showBookInfo[5][1])
       
         let userList = document.createElement("ul")
+        userList.setAttribute("id", "user-list")
 
         let likeButton = document.createElement("button")
         likeButton.innerHTML = "LIKE"
@@ -116,12 +117,14 @@ function renderBooksInfo(bookInfo){
         likeButtonFuncs(showBookInfo)
 
     })
+
+
   
 }
 
 function likeButtonFuncs(bookInfo){
 
-  console.log(bookInfo[5])
+  console.log(bookInfo)
   console.log(bookInfo[6]-1)
 
   let bookId = bookInfo[6]
@@ -131,8 +134,6 @@ function likeButtonFuncs(bookInfo){
 
   likeButtonID.addEventListener("click", function(){
 
-    likeButtonID.innerHTML = "UNLIKE"
-
     fetch(`${booksUrl}/${bookId}`, {
       method: "PATCH",
       headers: {
@@ -141,27 +142,93 @@ function likeButtonFuncs(bookInfo){
         body: JSON.stringify({
 
           "users": [
+            ...bookInfo[5],
             {
               "id": 1,
-              "username": "auer"
+              "username": "pouros"
             }
         ]
-
 
         }),
       })
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data)
+        console.log('Success:', data.users)
 
+
+        const showPanelUl = document.getElementById("user-list")
+        
+        const likeButton = document.getElementById("like-button")
+
+        showPanelUl.innerHTML = ""
+
+        data.users.forEach(element => {
+          let userName = document.createElement("li")
+          userName.innerHTML = element.username
+          showPanelUl.appendChild(userName)
+        })
+
+        showPanelUl.appendChild(likeButton)
+        likeButtonID.innerHTML = "UNLIKE"
+        likeButton.setAttribute("id", "unlike-button")
 
 
       })
 
   })
 
- 
 }
+
+// function unlikeButtonFuncs(bookInfo){
+
+//   const unlikeButton = document.getElementById("unlike-button")
+
+//   unlikeButton.addEventListener("click", function(){
+
+
+//   let bookId = bookInfo[6]
+
+
+//     fetch(`${booksUrl}/${bookId}`, {
+//       method: "PATCH",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Accept: "application/json"},
+//         body: JSON.stringify({
+
+//           "users": [
+//             ...bookInfo[5]
+//         ]
+
+//         }),
+//       })
+//       .then(response => response.json())
+//       .then(data => {
+//         console.log('Success:', data)
+
+//         const showPanelUl = document.getElementById("user-list")
+        
+
+//         showPanelUl.innerHTML = ""
+
+//         data.users.forEach(element => {
+//           let userName = document.createElement("li")
+//           userName.innerHTML = element.username
+//           showPanelUl.appendChild(userName)
+//         })
+
+//         showPanelUl.appendChild(unlikeButton)
+        
+      
+//       })
+
+
+//     unlikeButton.innerHTML = "LIKE"
+
+
+//   })
+// }
 
 
 
